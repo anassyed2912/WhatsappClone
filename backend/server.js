@@ -3,6 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 const connectDB = require('./src/utils/db');
 
 dotenv.config();
@@ -19,6 +20,16 @@ const api = require('./src/routes/api');
 
 app.use('/webhook', webhook);
 app.use('/api', api);
+
+
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '../frontend/dist');
+  app.use(express.static(frontendPath));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+}
 
 io.on('connection', (socket) => {
   console.log('socket connected', socket.id);
