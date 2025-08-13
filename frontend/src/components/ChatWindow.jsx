@@ -6,7 +6,8 @@ import { FaSmile, FaPaperclip, FaMicrophone, FaPaperPlane } from 'react-icons/fa
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:4000';
+const SOCKET_URL =
+  import.meta.env.VITE_SOCKET_URL || window.location.origin.replace(/^http/, 'ws');
 
 export default function ChatWindow({ wa_id, name }) {
   const [messages, setMessages] = useState([]);
@@ -21,7 +22,7 @@ export default function ChatWindow({ wa_id, name }) {
   }, [wa_id]);
 
   useEffect(() => {
-    const socket = io(SOCKET_URL);
+    const socket = io(SOCKET_URL, { transports: ['websocket'] });
     socket.on('new_messages', () => {
       if (wa_id) getConversation(wa_id).then(setMessages);
     });

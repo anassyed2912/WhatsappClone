@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Message = require('../models/Message');
 
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 router.get('/conversations', async (req, res) => {
   const msgs = await Message.find().sort({ timestamp: -1 }).lean();
@@ -17,10 +23,9 @@ router.get('/conversations', async (req, res) => {
     name: g.name || g.wa_id,
     lastMessage: g.messages[0],
     messagesCount: g.messages.length
-  })).sort((a,b) => new Date(b.lastMessage.timestamp) - new Date(a.lastMessage.timestamp));
+  })).sort((a, b) => new Date(b.lastMessage.timestamp) - new Date(a.lastMessage.timestamp));
   res.json(arr);
 });
-
 
 router.get('/conversations/:wa_id', async (req, res) => {
   const wa_id = req.params.wa_id;
@@ -28,12 +33,21 @@ router.get('/conversations/:wa_id', async (req, res) => {
   res.json(msgs);
 });
 
-
 router.post('/conversations/:wa_id/messages', async (req, res) => {
   const wa_id = req.params.wa_id;
-  const { body, from='me', type='text' } = req.body;
+  const { body, from = 'me', type = 'text' } = req.body;
   const id = 'local-' + Date.now();
-  const msg = await Message.create({ id, wa_id, contact_name: req.body.contact_name || null, from, to: wa_id, body, type, status: 'sent', timestamp: new Date() });
+  const msg = await Message.create({
+    id,
+    wa_id,
+    contact_name: req.body.contact_name || null,
+    from,
+    to: wa_id,
+    body,
+    type,
+    status: 'sent',
+    timestamp: new Date()
+  });
   const io = req.app.locals && req.app.locals.io;
   if (io) io.emit('new_messages', { ids: [msg.id], message: msg });
   res.status(201).json(msg);
