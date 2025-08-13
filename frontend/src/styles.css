@@ -18,7 +18,7 @@ body {
   display: flex;
 }
 
-/* Sidebar */
+
 .sidebar {
   width: 360px;
   background: #ffffff;
@@ -121,7 +121,7 @@ body {
   color: #999;
 }
 
-/* Chat Window */
+
 .chat-window {
   flex: 1;
   display: flex;
@@ -157,7 +157,7 @@ body {
   flex-direction: column;
 }
 
-/* Message Bubbles */
+
 .bubble {
   display: inline-block;
   padding: 8px 12px;
@@ -192,7 +192,6 @@ body {
   justify-content: flex-end;
 }
 
-/* Input Area — Updated WhatsApp Style */
 .input-area {
   height: 62px;
   display: flex;
