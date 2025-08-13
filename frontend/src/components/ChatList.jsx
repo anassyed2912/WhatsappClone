@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 export default function ChatList({ conversations, onSelect, active }) {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filter conversations based on search term
+
   const filteredConversations = useMemo(() => {
     if (!searchTerm.trim()) return conversations;
     const term = searchTerm.toLowerCase();
@@ -26,7 +26,6 @@ export default function ChatList({ conversations, onSelect, active }) {
         </div>
       </div>
 
-      {/* Search Input */}
       <div className="search">
         <input
           placeholder="Search or start new chat"
@@ -35,7 +34,7 @@ export default function ChatList({ conversations, onSelect, active }) {
         />
       </div>
 
-      {/* Chat List */}
+
       <div className="chat-list">
         {filteredConversations.map(c => (
           <div
